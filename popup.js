@@ -76,10 +76,28 @@ function displayTeams() {
 
     teamsCompleteBtn.setAttribute("id", "teamsCompleteBtn");
     teamsCompleteBtn.innerHTML = "Done";
+
+    document.body.appendChild(teamsCompleteBtn);
+
+    teamsCompleteBtn.onclick = sendTeams;
+}
+
+// Sending favourite teams list to content.js
+function sendTeams () {
+    if (favTeams.length > 0) {
+        chrome.tabs.sendMessage(tabID, favTeams); // Sending the message to context.js via the tabID
+    }
 }
 
 // Favourite teams list
 var favTeams = [];
 
+// Tabid
+var tabID;
+
 // Load the setup function once window is loaded
 window.onload = init;
+
+chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
+    tabID = tabs[0].id;
+});
