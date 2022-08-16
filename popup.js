@@ -1,9 +1,11 @@
+// Setup function to be called when page is loaded
 function init() {
     console.log("popup script running");
     var favTeamBtn = document.getElementById("favTeamBtn");
     favTeamBtn.onclick = receiveTeam;
 }
 
+// Receive favourite team from text field and add to favourite teams list
 function receiveTeam() {
     var favTeam = document.getElementById("favTeamTxt").value;
     favTeams.push(favTeam);
@@ -12,6 +14,7 @@ function receiveTeam() {
     anotherTeam();
 }
 
+// Option to accept add another team to favourite teams list
 function anotherTeam() {
     document.getElementById("favTeamPrompt").innerHTML = "Do you have another favourite team?";
 
@@ -34,6 +37,7 @@ function anotherTeam() {
     anotherTeamDenyBtn.onclick = displayTeams;
 }
 
+// Reseting popup to receive a new team
 function resetTeamInput() {
     document.getElementById("favTeamPrompt").innerHTML = "What's one of your favourite teams?";
     
@@ -55,6 +59,7 @@ function resetTeamInput() {
     favTeamBtn.onclick = receiveTeam;
 }
 
+// Display favourite teams list
 function displayTeams() {
     document.getElementById("favTeamPrompt").innerHTML = "Here are your favourite teams:";
     
@@ -66,8 +71,15 @@ function displayTeams() {
     console.log("Here's the favTeams: " + favTeams);
     favTeamsDisplay.innerHTML = favTeams;
     document.body.appendChild(favTeamsDisplay);
+
+    const teamsCompleteBtn = document.createElement("button");
+
+    teamsCompleteBtn.setAttribute("id", "teamsCompleteBtn");
+    teamsCompleteBtn.innerHTML = "Done";
 }
 
+// Favourite teams list
 var favTeams = [];
 
+// Load the setup function once window is loaded
 window.onload = init;
