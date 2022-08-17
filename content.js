@@ -1,7 +1,7 @@
 let vid_titles = [];
 let prev_vid_title_count = 0;
 let regex = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g; // to remove punctuation from vid titles
-let keywords = ["chrome", "the"]; //array of keywords of videos to blur
+let keywords = ["chrome", "the", "can"]; //array of keywords of videos to blur
 //keywords must be in lowercase
 
 chrome.runtime.onMessage.addListener(receiver); // Receiving the popup.js message with favourite teams
@@ -46,7 +46,6 @@ window.onscroll = function (e) { // get the titles that load after the user scro
     }
     if (vid_titles.length > prev_vid_title_count){ // if more vid titles added to the vid title arr
         console.log(vid_titles);
-        console.log(keywords);
         blurUnwantedVids();
     }
 }
@@ -54,7 +53,4 @@ window.onscroll = function (e) { // get the titles that load after the user scro
 // Receiving the message as an event object
 function receiver(request) {
     keywords = request; // Setting keywords as favTeams from popup.js
-
-    getTitles();
-    blurUnwantedVids();
 }
