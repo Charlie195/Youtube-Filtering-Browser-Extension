@@ -1,4 +1,7 @@
 // Setup function to be called when page is loaded
+const updateMessage = "FAV TEAMS ARRAY HAS BEEN UPDATED";
+const favTeamsLocalStorageKey = "favTeamsData";
+
 function init() {
     console.log("popup script running");
     var favTeamBtn = document.getElementById("favTeamBtn");
@@ -13,7 +16,6 @@ function receiveTeam() {
     }
     else{
         favTeams.push(favTeam);
-        console.log(favTeams);
         anotherTeam();
     }
 }
@@ -83,13 +85,17 @@ function displayTeams() {
 
     document.body.appendChild(teamsCompleteBtn);
 
-    teamsCompleteBtn.onclick = sendTeams;
+    teamsCompleteBtn.onclick = sendFavTeams;
 }
 
-// Sending favourite teams list to content.js
-function sendTeams () {
-    console.log("sent message")
-    chrome.tabs.sendMessage(tabID, favTeams); // Sending the message to context.js via the tabID
+function sendFavTeams(){
+    // Sending favourite teams list to content.js
+    let localFavTeams = localStorage.getItem(favTeamsLocalStorageKey) ?? "";
+    localFavTeams = localFavTeams.concat(","+favTeams.join(","));
+    localStorage.setItem(favTeamsLocalStorageKey, localFavTeams);
+    let data = {"subject": "favTeams", "data": localFavTeams};
+    chrome.tabs.sendMessage(tabID, data); // Sending the message to context.js via the tabID
+    console.log(data)
     window.close();
 }
 
