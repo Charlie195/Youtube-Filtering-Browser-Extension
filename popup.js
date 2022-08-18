@@ -79,7 +79,7 @@ function displayTeams() {
 
     document.body.appendChild(teamsCompleteBtn);
 
-    teamsCompleteBtn.onclick = sendTeams;
+    teamsCompleteBtn.onclick = ()=>{console.log('heeeee')};//sendTeams;
 }
 
 // Sending favourite teams list to content.js
@@ -97,7 +97,3 @@ var tabID;
 
 // Load the setup function once window is loaded
 window.onload = init;
-
-chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
-    tabID = tabs[0].id;
-});
