@@ -52,5 +52,9 @@ window.onscroll = function (e) { // get the titles that load after the user scro
 
 // Receiving the message as an event object
 function receiver(request) {
-    keywords = request; // Setting keywords as favTeams from popup.js
+    // Setting keywords as favTeams from popup.js
+    keywords.concat(request.map(wrd => wrd.toLowerCase()));
+    console.log(keywords);
+    getTitles();
+    blurUnwantedVids();
 }
