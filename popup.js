@@ -8,10 +8,14 @@ function init() {
 // Receive favourite team from text field and add to favourite teams list
 function receiveTeam() {
     var favTeam = document.getElementById("favTeamTxt").value;
-    favTeams.push(favTeam);
-    console.log(favTeams);
-
-    anotherTeam();
+    if (favTeam.trim().includes(" ") || favTeam == ""){
+        alert("Please enter a word (one word)")
+    }
+    else{
+        favTeams.push(favTeam);
+        console.log(favTeams);
+        anotherTeam();
+    }
 }
 
 // Option to accept add another team to favourite teams list
@@ -79,14 +83,14 @@ function displayTeams() {
 
     document.body.appendChild(teamsCompleteBtn);
 
-    teamsCompleteBtn.onclick = ()=>{console.log('heeeee')};//sendTeams;
+    teamsCompleteBtn.onclick = sendTeams;
 }
 
 // Sending favourite teams list to content.js
 function sendTeams () {
-    if (favTeams.length > 0) {
-        chrome.tabs.sendMessage(tabID, favTeams); // Sending the message to context.js via the tabID
-    }
+    console.log("sent message")
+    chrome.tabs.sendMessage(tabID, favTeams); // Sending the message to context.js via the tabID
+    window.close();
 }
 
 // Favourite teams list
@@ -97,3 +101,7 @@ var tabID;
 
 // Load the setup function once window is loaded
 window.onload = init;
+
+chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
+    tabID = tabs[0].id;
+});
