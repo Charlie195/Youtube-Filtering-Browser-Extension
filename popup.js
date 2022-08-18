@@ -89,19 +89,14 @@ function displayTeams() {
 // Sending favourite teams list to content.js
 function sendTeams () {
     console.log("sent message")
-    chrome.tabs.sendMessage(tabID, favTeams); // Sending the message to context.js via the tabID
+    chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
+        chrome.tabs.sendMessage(tabs[0].id, favTeams); // Sending the message to context.js via the tabID
+    });
     window.close();
 }
 
 // Favourite teams list
 var favTeams = [];
 
-// Tabid
-var tabID;
-
 // Load the setup function once window is loaded
 window.onload = init;
-
-chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
-    tabID = tabs[0].id;
-});
