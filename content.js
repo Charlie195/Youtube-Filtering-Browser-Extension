@@ -1,7 +1,11 @@
+const favTeamsLocalStorageKey = "favTeamsData";
 let vid_titles = [];
 let prev_vid_title_count = 0;
 let regex = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g; // to remove punctuation from vid titles
-let keywords = [];
+if(localStorage.getItem(favTeamsLocalStorageKey) != null)
+{var keywords = localStorage.getItem(favTeamsLocalStorageKey).split(",");}
+else
+{var keywords = []}
 chrome.runtime.onMessage.addListener(receiver); // Receiving the popup.js message with favourite teams
 
 function getTitles(){
@@ -30,8 +34,11 @@ function blurUnwantedVids(){
     }
 }
 
-getTitles(); // get the titles before the user starts scrolling
-blurUnwantedVids();
+// get the titles before the user starts scrolling
+setTimeout(()=>{
+    getTitles(); 
+    blurUnwantedVids();
+}, 500); //wait 0.5 sec so that all vids load
 
 let lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
 window.onscroll = function (e) { // get the titles that load after the user scrolls
@@ -51,7 +58,14 @@ function receiver(request) {
     // Update keywords
     console.log(request);
     if (request["subject"] == "favTeams"){
-        keywords = request["data"].split(",").map(wrd => wrd.toLowerCase().trim());
+        let localFavTeams = localStorage.getItem(favTeamsLocalStorageKey);
+        if (localFavTeams != null)
+        {localFavTeams = localFavTeams.concat(","+request["data"].join(","));}
+        else
+        {localFavTeams = request["data"].join(",");}
+        localStorage.setItem(favTeamsLocalStorageKey, localFavTeams);
+
+        keywords = localFavTeams.split(",").map(wrd => wrd.toLowerCase().trim());
         console.log(keywords);
         getTitles();
         blurUnwantedVids();

@@ -1,5 +1,4 @@
 // Setup function to be called when page is loaded
-const updateMessage = "FAV TEAMS ARRAY HAS BEEN UPDATED";
 const favTeamsLocalStorageKey = "favTeamsData";
 
 function init() {
@@ -90,10 +89,8 @@ function displayTeams() {
 
 function sendFavTeams(){
     // Sending favourite teams list to content.js
-    let localFavTeams = localStorage.getItem(favTeamsLocalStorageKey) ?? "";
-    localFavTeams = localFavTeams.concat(","+favTeams.join(","));
-    localStorage.setItem(favTeamsLocalStorageKey, localFavTeams);
-    let data = {"subject": "favTeams", "data": localFavTeams};
+    localStorage.clear()
+    let data = {"subject": "favTeams", "data": favTeams};
     chrome.tabs.sendMessage(tabID, data); // Sending the message to context.js via the tabID
     console.log(data)
     window.close();
