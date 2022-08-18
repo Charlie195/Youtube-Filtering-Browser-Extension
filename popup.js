@@ -3,15 +3,24 @@ function init() {
     console.log("popup script running");
     var favTeamBtn = document.getElementById("favTeamBtn");
     favTeamBtn.onclick = receiveTeam;
+
+    chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
+        let url = tabs[0].url;
+        // use `url` here inside the callback because it's asynchronous!
+    });
 }
 
 // Receive favourite team from text field and add to favourite teams list
 function receiveTeam() {
     var favTeam = document.getElementById("favTeamTxt").value;
-    favTeams.push(favTeam);
-    console.log(favTeams);
-
-    anotherTeam();
+    if (favTeam.trim().includes(" ") || favTeam == ""){
+        alert("Please enter a word (one word)")
+    }
+    else{
+        favTeams.push(favTeam);
+        console.log(favTeams);
+        anotherTeam();
+    }
 }
 
 // Option to accept add another team to favourite teams list
@@ -84,14 +93,11 @@ function displayTeams() {
 
 // Sending favourite teams list to content.js
 function sendTeams () {
-    if (favTeams.length > 0) {
-        console.log(favTeams);
-
-        // Obtain tabID to send message to content.js
-        chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
-            chrome.tabs.sendMessage(tabs[0].id, favTeams); // Sending the message to context.js via the tabID
-        });
-    }
+    console.log("sent message")
+    chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
+        chrome.tabs.sendMessage(tabs[0].id, favTeams); // Sending the message to context.js via the tabID
+    });
+    window.close();
 }
 
 // Favourite teams list
