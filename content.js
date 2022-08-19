@@ -54,3 +54,7 @@ function receiver(request) {
     getTitles();
     blurUnwantedVids();
 }
+
+// chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
+//     console.log(tabs[0].url); // current tab
+// });
