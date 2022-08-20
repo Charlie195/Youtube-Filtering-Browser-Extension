@@ -1,4 +1,3 @@
-// Setup function to be called when page is loaded
 const favTeamsLocalStorageKey = "favTeamsData";
 
 function init() {
@@ -17,8 +16,7 @@ function processPage() {
     console.log("popup script running");
 
     if (url.includes("youtube.com")) {
-        var favTeamBtn = document.getElementById("favTeamBtn");
-        favTeamBtn.onclick = receiveTeam//displayMainMenu;
+        displayMainMenu();
     }
     else {
         document.getElementById("center").innerHTML =
@@ -27,130 +25,108 @@ function processPage() {
 }
 
 function displayMainMenu(){
-    let favTeams = getFavTeams();
+    console.log("displayMainMenu")
+    //change top btns
+    let btnFormNode = document.getElementById("top-buttons-form");
+    btnFormNode.innerHTML = `                    
+    <button id="add-fav-team" type="button">Add a Team</button>
+    <button id="close-popup" type="button">Done</button>`
+
+    //btn functions
+    let addTeamBtn = document.getElementById("add-fav-team");
+    let closeBtn = document.getElementById("close-popup");
+    addTeamBtn.onclick = addFavTeam;
+    closeBtn.onclick = ()=>{window.close();}
+
+    //remove new input form
+    document.getElementById("new-team-input-div").innerHTML = "";
+
+    //add favTeams to scrollable
+    let scrollable = document.getElementById("scrollable");
+    let favTeamsArr = localStorage.getItem(favTeamsLocalStorageKey);
+    scrollable.innerHTML = "";
+    if (favTeamsArr != null){
+        favTeamsArr = favTeamsArr.split(',');
+        console.log(favTeamsArr);
+        favTeamsArr.forEach(elem => {
+            let node = document.createElement("div");
+            let textNode = document.createTextNode(elem)
+            node.appendChild(textNode);
+            node.setAttribute("class", " favTeam");
+            scrollable.appendChild(node)
+        });
+    }
 }
 
-function getFavTeams(){
-    
-    return favTeams;
+function addFavTeam(){
+    console.log("addFavTeam");
+    // change top buttons
+    let btnFormNode = document.getElementById("top-buttons-form");
+    btnFormNode.innerHTML = `                    
+    <button id="save-data" type="button">Save</button>
+    <button id="delete-all-favTeams" type="button">Delete All</button>`
+
+    //btn functions
+    let saveBtn = document.getElementById("save-data");
+    let delAllBtn = document.getElementById("delete-all-favTeams");
+    saveBtn.onclick = saveFavTeam;
+    delAllBtn.onclick = deleteFavTeamsData;
+
+    // add text input to scrollable
+    let newTeamInput = document.getElementById("new-team-input-div");
+    newTeamInput.innerHTML = `
+    <form>
+        <input type="text" id="new-team-input"></input>
+    </form>`
+    newTeamInput.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          saveBtn.click();
+        }
+    });
+    document.getElementById("new-team-input").focus();
+
 }
 
-// ******************** OLDER CODE ********************
-// Receive favourite team from text field and add to favourite teams list
-function receiveTeam() {
-    var favTeam = document.getElementById("favTeamTxt").value;
-    if (favTeam.trim().includes(" ") || favTeam == ""){
-        alert("Please enter a word (one word)")
+function deleteFavTeamsData(){//test this function
+    console.log("deleteFavTeamsData");
+    let proceed = confirm("Are you sure you want to delete all the fav teams you have saved in localStorage?")
+    if (proceed){
+        localStorage.removeItem(favTeamsLocalStorageKey);
+        displayMainMenu();
+        sendFavTeams();
+    }
+}
+
+function saveFavTeam(){
+    console.log("saveFavTeam");
+    let favTeam = document.getElementById("new-team-input").value;
+    if (favTeam.trim().includes(" ")){
+        alert("please enter one word with no spaces");
+        addFavTeam();
+    }
+    else if (favTeam != ""){
+        let localFavTeams = localStorage.getItem(favTeamsLocalStorageKey);
+        if (localFavTeams != null)
+        {localFavTeams = favTeam.toLowerCase().trim()+","+localFavTeams;}
+        else
+        {localFavTeams = favTeam.toLowerCase().trim();}
+        localStorage.setItem(favTeamsLocalStorageKey, localFavTeams);
+        displayMainMenu();
+        sendFavTeams();
     }
     else{
-        favTeams.push(favTeam);
-        anotherTeam();
+        displayMainMenu();
     }
 }
-
-// Option to accept add another team to favourite teams list
-function anotherTeam() {
-    document.getElementById("favTeamPrompt").innerHTML = "Do you have another favourite team?";
-
-    document.getElementById("favTeamTxt").remove();
-    document.getElementById("favTeamBtn").remove();
-
-    const anotherTeamRequestBtn = document.createElement("button");
-    const anotherTeamDenyBtn = document.createElement("button");
-    
-    anotherTeamRequestBtn.setAttribute("id", "anotherTeamReqBtn");
-    anotherTeamDenyBtn.setAttribute("id", "anotherTeamDenyBtn");
-
-    anotherTeamRequestBtn.innerHTML = "Yes";
-    anotherTeamDenyBtn.innerHTML = "No";
-
-    document.body.appendChild(anotherTeamRequestBtn);
-    document.body.appendChild(anotherTeamDenyBtn);
-
-    anotherTeamRequestBtn.onclick = resetTeamInput;
-    anotherTeamDenyBtn.onclick = sendFavTeams;
-}
-
-// Reseting popup to receive a new team
-function resetTeamInput() {
-    document.getElementById("favTeamPrompt").innerHTML = "What's one of your favourite teams?";
-    
-    document.getElementById("anotherTeamReqBtn").remove();
-    document.getElementById("anotherTeamDenyBtn").remove();
-
-    const favTeamTxt = document.createElement("input");
-    const favTeamBtn = document.createElement("button");
-
-    favTeamTxt.setAttribute("type", "text");
-    favTeamTxt.setAttribute("id", "favTeamTxt");
-    favTeamBtn.setAttribute("id", "favTeamBtn");
-
-    favTeamBtn.innerHTML = "Enter";
-
-    center.appendChild(favTeamTxt);
-    center.appendChild(favTeamBtn);
-
-    favTeamBtn.onclick = receiveTeam;
-}
-
-// Display favourite teams list
-function displayTeams() {
-    document.getElementById("favTeamPrompt").innerHTML = "Here are your favourite teams:";
-    
-    document.getElementById("anotherTeamReqBtn").remove();
-    document.getElementById("anotherTeamDenyBtn").remove();
-
-    const favTeamsDisplay = document.createElement("ul"); // List of favourite teams
-    favTeamsDisplay.setAttribute("id", "favTeamsDisplayList");
-    center.appendChild(favTeamsDisplay);
-
-    // Appending each item of the favTeams array as a seperate list element
-    for (var i = 0; i < favTeams.length; i++) {
-        var favTeamListElement = document.createElement("li");
-        var favTeamElement = document.createElement("h4");
-        favTeamElement.innerHTML = favTeams[i];
-        favTeamListElement.appendChild(favTeamElement);
-
-        // Appending an edit button with each team
-        var editTeamBtn = document.createElement("button");
-        editTeamBtn.innerHTML = "EDIT";
-        editTeamBtn.setAttribute("id", "editTeamBtn" + (i + 1)); // Setting ids to recall later
-        favTeamListElement.appendChild(editTeamBtn);
-
-        // Appending a delete button with each team
-        var deleteTeamBtn = document.createElement("button");
-        deleteTeamBtn.innerHTML = "DELETE";
-        deleteTeamBtn.setAttribute("id", "deleteTeamBtn" + (i + 1));
-        favTeamListElement.appendChild(deleteTeamBtn);
-
-        // Adding event handlers to the buttons
-        editTeamBtn.onclick = editTeam;
-        deleteTeamBtn.onclick = deleteTeam;
-
-        document.getElementById("favTeamsDisplayList").appendChild(favTeamListElement);
-    }
-
-    const teamsCompleteBtn = document.createElement("button");
-
-    teamsCompleteBtn.setAttribute("id", "teamsCompleteBtn");
-    teamsCompleteBtn.innerHTML = "Done";
-
-    center.appendChild(teamsCompleteBtn);
-
-    teamsCompleteBtn.onclick = sendFavTeams;
-}
-
 
 function sendFavTeams(){
-    // Sending favourite teams list to content.js
-    localStorage.clear()
-    let data = {"subject": "favTeams", "data": favTeams};
-    chrome.tabs.sendMessage(tabID, data); // Sending the message to context.js via the tabID
+    // Send favourite teams list to content.js
+    let data = {"subject": "favTeams", "data": localStorage.getItem(favTeamsLocalStorageKey)};
+    chrome.tabs.sendMessage(tabID, data);
     console.log(data)
+    favTeams = [];
 }
-
-// Favourite teams list
-var favTeams = [];
 
 // Tab Details
 var url = "does it get changed";
