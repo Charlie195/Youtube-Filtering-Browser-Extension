@@ -3,20 +3,36 @@
         <style>
             body {
                 margin: 0;
-                padding: 20;
+                padding: 10;
                 background-color: lightblue;
+                width: 200px;
+                height: 200px;
+            }
+            #scrollable{
+                overflow: auto;
+                margin: auto;
+                height: 200px;
+                text-align: left;
+            }
+            .favTeam{
+                padding: 5;
             }
         </style>
     </head>
     <body>
-        <center id="center">
-            <h1>Popup Title</h1>
-            <form>
-                <h4 id="favTeamPrompt">What's one of your favourite teams?</h4>
-                <input type="text" id="favTeamTxt">
-                <button id="favTeamBtn">Enter</button>
-            </form>
-            <script type="text/javascript" src="popup.js"></script>
-        </center>
+        <div id="body">
+            <center id="center">
+                <h1>Favorite Teams</h1>
+                <form id="buttons-form">
+                    <button id="add-fav-team">Add a Team</button>
+                    <button id="save-edits">Save Edits</button>
+                </form>
+                <div id="scrollable">
+                    <div class="favTeam">Lorem ipsum dolor sit amet hull can you type like consectetuer adipiscing</div>
+                    <div class="favTeam">Lorem ipsum dolor sit amet hull can you type like consectetuer adipiscing</div>
+                </div>
+            </center>
+        </div>
+        <script type="text/javascript" src="popup.js"></script>
     </body>
 </html>

@@ -16,16 +16,24 @@ function processPage() {
 
     if (url.includes("youtube.com")) {
         var favTeamBtn = document.getElementById("favTeamBtn");
-        favTeamBtn.onclick = receiveTeam;
+        favTeamBtn.onclick = displayMainMenu;
     }
     else {
-        document.getElementById("favTeamPrompt").innerHTML = "You must be on YouTube for this extension";
-
-        document.getElementById("favTeamTxt").remove();
-        document.getElementById("favTeamBtn").remove();
+        document.getElementById("center").innerHTML =
+        "<h1>ERROR</h1><h4>This extension only works when youtube.com is open</h4>";
     }
 }
 
+function displayMainMenu(){
+    let favTeams = getFavTeams();
+}
+
+function getFavTeams(){
+    
+    return favTeams;
+}
+
+// ******************** OLDER CODE ********************
 // Receive favourite team from text field and add to favourite teams list
 function receiveTeam() {
     var favTeam = document.getElementById("favTeamTxt").value;
