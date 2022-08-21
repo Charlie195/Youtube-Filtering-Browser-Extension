@@ -12,7 +12,7 @@ function init() {
 
 // Setup function
 function processPage() {
-    console.log("popup script running");
+    console.log(url);
 
     if (url.includes("youtube.com")) {
         var favTeamBtn = document.getElementById("favTeamBtn");
