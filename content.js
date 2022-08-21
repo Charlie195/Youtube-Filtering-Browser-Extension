@@ -1,10 +1,15 @@
-let vid_titles = [];
-let prev_vid_title_count = 0;
-let regex = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g; // to remove punctuation from vid titles
-let keywords = [];
+const favTeamsLocalStorageKey = "favTeamsData";
+var vid_titles = [];
+var prev_vid_title_count = 0;
+var regex = /[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]/g; // to remove punctuation from vid titles
+if(localStorage.getItem(favTeamsLocalStorageKey) != null)
+{var keywords = localStorage.getItem(favTeamsLocalStorageKey).split(",");}
+else
+{var keywords = []}
 chrome.runtime.onMessage.addListener(receiver); // Receiving the popup.js message with favourite teams
 
 function getTitles(){
+    vid_titles = [];
     let title;
     let yt_content_tags = [
         "ytd-rich-grid-media", "ytd-rich-grid-slim-media", "ytd-grid-video-renderer",
@@ -14,7 +19,6 @@ function getTitles(){
     yt_content_tags.forEach(elem => {
         all = all.concat(Array.prototype.slice.call(document.getElementsByTagName(elem)))
     });
-    //let all = [Array.prototype.slice.call(vids).concat(Array.prototype.slice.call(shorts)).concat(Array.prototype.slice.call(recs)).concat(Array.prototype.slice.call(playlist_recs));]
     for (let i=0; i<all.length; i++){
         title = all[i].querySelector("#video-title");
         if (!vid_titles.includes(title) && (title.innerText.replace(regex, "").toLowerCase().split(" ").filter(elem => keywords.includes(elem))).length > 0){
@@ -30,8 +34,17 @@ function blurUnwantedVids(){
     }
 }
 
-getTitles(); // get the titles before the user starts scrolling
-blurUnwantedVids();
+function unBlurUnwantedVids(){
+    for (let i=0; i<vid_titles.length; i++){
+        vid_titles[i].parentElement.parentElement.parentElement.parentElement.parentElement.parentElement.style.background = "";
+    }
+}
+
+// get the titles before the user starts scrolling
+setTimeout(()=>{
+    getTitles(); 
+    blurUnwantedVids();
+}, 500); //wait 0.5 sec so that all vids load
 
 let lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
 window.onscroll = function (e) { // get the titles that load after the user scrolls
@@ -48,11 +61,24 @@ window.onscroll = function (e) { // get the titles that load after the user scro
 
 // Receiving the message as an event object
 function receiver(request) {
-    // Setting keywords as favTeams from popup.js
-    keywords = keywords.concat(request.map(wrd => wrd.toLowerCase().trim()));
-    console.log(keywords);
-    getTitles();
-    blurUnwantedVids();
+    // Update keywords
+    unBlurUnwantedVids();
+    console.log(request);
+    if (request["subject"] == "favTeams"){
+        let popupFavTeams = request["data"];
+        if (popupFavTeams != null){
+            localStorage.setItem(favTeamsLocalStorageKey, popupFavTeams);
+            keywords = localStorage.getItem(favTeamsLocalStorageKey).split(",");
+        }
+        else{
+            localStorage.removeItem(favTeamsLocalStorageKey);
+            keywords = []
+        }
+
+        console.log(keywords);
+        getTitles();
+        blurUnwantedVids();
+    }
 }
 
 // chrome.tabs.query({active: true, lastFocusedWindow: true}, tabs => {
