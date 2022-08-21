@@ -1,0 +1,37 @@
+body {
+    margin: 0;
+    padding: 10;
+    background-color: #add8e6;
+    width: 250px;
+    height: 300px;
+}
+#scrollable{
+    overflow: auto;
+    margin: auto;
+    height: 300px;
+    text-align: left;
+}
+#new-team-input-div{
+    margin-top: 8px; 
+    margin-bottom: -15px;
+}
+.container{
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    margin-right: 8px;
+    padding: 8px 0px;
+}
+.favTeam{
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.icon-btn{
+    margin-left: 1px;
+    width: 25px;
+}
+.icon-btn-div{
+    display: flex;
+}
+
