@@ -1,4 +1,8 @@
+// note that favTeams means filtered keywords (keywords that have to be filtered)
+
 const favTeamsLocalStorageKey = "favTeamsData";
+var url;
+var tabID;
 
 function init() {
     center = document.getElementById("center");
@@ -29,7 +33,7 @@ function displayMainMenu(){
     //change top btns
     let btnDivNode = document.getElementById("top-buttons-div");
     btnDivNode.innerHTML = `                    
-    <button id="add-fav-team" type="button">Add a Team</button>
+    <button id="add-fav-team" type="button">Add a Keyword</button>
     <button id="close-popup" type="button">Done</button>`
 
     //btn functions
@@ -81,8 +85,10 @@ function deleteBtnPressed(){
         document.getElementById(`favTeam-container-${id_number}`).remove();
         let localFavTeams = localStorage.getItem(favTeamsLocalStorageKey).split(",");
         localFavTeams.splice(localFavTeams.indexOf(favTeam), 1);
-        localStorage.setItem(favTeamsLocalStorageKey, localFavTeams);
+        if (localFavTeams.length == 0) {localStorage.removeItem(favTeamsLocalStorageKey)}
+        else{localStorage.setItem(favTeamsLocalStorageKey, localFavTeams)};
         displayMainMenu();
+        sendFavTeams();
     }
 }
 //todo hint when hover over btn
@@ -127,6 +133,7 @@ function saveNewFavTeamValue(favTeam){
     localFavTeams[localFavTeams.indexOf(favTeam)] = document.getElementById("favTeam-edit-input").value;
     localStorage.setItem(favTeamsLocalStorageKey, localFavTeams);
     displayMainMenu();
+    sendFavTeams();
 }
 
 function addFavTeam(){
@@ -163,9 +170,9 @@ function addFavTeam(){
 
 }
 
-function deleteFavTeamsData(){//test this function
+function deleteFavTeamsData(){
     console.log("deleteFavTeamsData");
-    let proceed = confirm("Are you sure you want to delete all the fav teams you have saved in localStorage?")
+    let proceed = confirm("Are you sure you want to delete all the saved keywords?")
     if (proceed){
         localStorage.removeItem(favTeamsLocalStorageKey);
         displayMainMenu();
@@ -202,10 +209,6 @@ function sendFavTeams(){
     console.log(data)
     favTeams = [];
 }
-
-// Tab Details
-var url = "does it get changed";
-var tabID;
 
 // Load the setup function once window is loaded
 window.onload = init;
