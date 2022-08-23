@@ -1,4 +1,8 @@
+// note that favTeams means filtered keywords (keywords that have to be filtered)
+
 const favTeamsLocalStorageKey = "favTeamsData";
+var url;
+var tabID;
 
 function init() {
     center = document.getElementById("center");
@@ -29,7 +33,7 @@ function displayMainMenu(){
     //change top btns
     let btnDivNode = document.getElementById("top-buttons-div");
     btnDivNode.innerHTML = `                    
-    <button id="add-fav-team" type="button">Add a Team</button>
+    <button id="add-fav-team" type="button">Add a Keyword</button>
     <button id="close-popup" type="button">Done</button>`
 
     //btn functions
@@ -168,7 +172,7 @@ function addFavTeam(){
 
 function deleteFavTeamsData(){
     console.log("deleteFavTeamsData");
-    let proceed = confirm("Are you sure you want to delete all the fav teams you have saved in localStorage?")
+    let proceed = confirm("Are you sure you want to delete all the saved keywords?")
     if (proceed){
         localStorage.removeItem(favTeamsLocalStorageKey);
         displayMainMenu();
@@ -205,10 +209,6 @@ function sendFavTeams(){
     console.log(data)
     favTeams = [];
 }
-
-// Tab Details
-var url = "does it get changed";
-var tabID;
 
 // Load the setup function once window is loaded
 window.onload = init;
