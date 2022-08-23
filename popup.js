@@ -81,8 +81,10 @@ function deleteBtnPressed(){
         document.getElementById(`favTeam-container-${id_number}`).remove();
         let localFavTeams = localStorage.getItem(favTeamsLocalStorageKey).split(",");
         localFavTeams.splice(localFavTeams.indexOf(favTeam), 1);
-        localStorage.setItem(favTeamsLocalStorageKey, localFavTeams);
+        if (localFavTeams.length == 0) {localStorage.removeItem(favTeamsLocalStorageKey)}
+        else{localStorage.setItem(favTeamsLocalStorageKey, localFavTeams)};
         displayMainMenu();
+        sendFavTeams();
     }
 }
 //todo hint when hover over btn
@@ -127,6 +129,7 @@ function saveNewFavTeamValue(favTeam){
     localFavTeams[localFavTeams.indexOf(favTeam)] = document.getElementById("favTeam-edit-input").value;
     localStorage.setItem(favTeamsLocalStorageKey, localFavTeams);
     displayMainMenu();
+    sendFavTeams();
 }
 
 function addFavTeam(){
@@ -163,7 +166,7 @@ function addFavTeam(){
 
 }
 
-function deleteFavTeamsData(){//test this function
+function deleteFavTeamsData(){
     console.log("deleteFavTeamsData");
     let proceed = confirm("Are you sure you want to delete all the fav teams you have saved in localStorage?")
     if (proceed){
